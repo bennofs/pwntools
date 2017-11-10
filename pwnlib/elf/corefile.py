@@ -69,8 +69,10 @@ import gzip
 import re
 import os
 import socket
+import subprocess
 import StringIO
 import tempfile
+import time
 
 import elftools
 from elftools.common.py3compat import bytes2str
@@ -1158,23 +1160,36 @@ class CorefileFinder(object):
     def native_corefile_pipe(self):
         """native_corefile_pipe(self) -> str
         """
-        # We only support apport
-        if '/apport' not in self.kernel_core_pattern:
-            log.warn_once("Unsupported core_pattern: %r" % self.kernel_core_pattern)
-            return None
+        if '/apport' in self.kernel_core_pattern:
+            apport_core = self.apport_corefile()
 
-        apport_core = self.apport_corefile()
-
-        if apport_core:
-            # Write the corefile to the local directory
-            filename = 'core.%s.%i.apport' % (self.basename, self.pid)
-            with open(filename, 'wb+') as f:
-                f.write(apport_core)
+            if apport_core:
+                # Write the corefile to the local directory
+                filename = 'core.%s.%i.apport' % (self.basename, self.pid)
+                with open(filename, 'wb+') as f:
+                    f.write(apport_core)
+                return filename
+        elif '/systemd-coredump' in self.kernel_core_pattern:
+            filename = 'core.%i' % self.pid
+            time.sleep(1)
+            p = process([
+                "coredumpctl", "dump", "-o", filename, 
+                "COREDUMP_PID={}".format(self.pid),
+                "COREDUMP_EXE={}".format(self.exe)
+            ])
+            p.wait()
+            if p.poll() != 0:
+                p.stream()
+                return None
             return filename
+        else:
+            log.warn_once("Unsupported core_pattern: %r", self.kernel_core_pattern)
+            return None
 
         # Pretend core_pattern was just 'core', and see if we come up with anything
         self.kernel_core_pattern = 'core'
         return self.native_corefile_pattern()
+
 
     def native_corefile_pattern(self):
         """
