@@ -39,7 +39,7 @@ setup_travis()
     [[ -f usr/bin/powerpc-linux-gnu-as ]]   || install_deb binutils-powerpc-linux-gnu
 
     # Install cross-gcc
-    [[ -f usr/bin/mips-linux-gnu-gcc ]]      || install_deb gcc-mips-linux-gnu
+    [[ -f usr/bin/mips-linux-gnu-gcc ]]      || install_deb gcc-mips-linux-gnu && install_deb gcc-5-mips-linux-gnu
 
     # Test that the installs worked
     as                      --version
@@ -49,6 +49,7 @@ setup_travis()
     mips-linux-gnu-as       --version
     powerpc-linux-gnu-as    --version
     qemu-arm-static         --version
+    ls -al usr/bin/mips-*
     mips-linux-gnu-gcc      --version
 
     # Force-install capstone because it's broken somehow
