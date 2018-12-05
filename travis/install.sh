@@ -38,19 +38,19 @@ setup_travis()
     [[ -f usr/bin/mips-linux-gnu-as ]]      || install_deb binutils-mips-linux-gnu
     [[ -f usr/bin/powerpc-linux-gnu-as ]]   || install_deb binutils-powerpc-linux-gnu
 
-    # Install cross-gcc
-    [[ -f usr/bin/mips-linux-gnu-gcc ]]      || \
-        install_deb gcc-mips-linux-gnu \
-            && install_deb gcc-5-mips-linux-gnu \
-            && install_deb libgcc-5-dev-mips-cross  \
-            && install_deb gcc-5-mips-linux-gnu-base  \
-            && install_deb cpp-5-mips-linux-gnu \
-            && install_deb cpp-mips-linux-gnu \
-            && install_deb gcc-5-cross-base-ports \
-            && install_deb libatomic1-mips-cross \
-            && install_deb libgcc1-mips-cross  \
-            && install_deb libgomp1-mips-cross \
-            && install_deb libc6-mips-cross
+    # # Install cross-gcc
+    # [[ -f usr/bin/mips-linux-gnu-gcc ]]      || \
+    #     install_deb gcc-mips-linux-gnu \
+    #         && install_deb gcc-5-mips-linux-gnu \
+    #         && install_deb libgcc-5-dev-mips-cross  \
+    #         && install_deb gcc-5-mips-linux-gnu-base  \
+    #         && install_deb cpp-5-mips-linux-gnu \
+    #         && install_deb cpp-mips-linux-gnu \
+    #         && install_deb gcc-5-cross-base-ports \
+    #         && install_deb libatomic1-mips-cross \
+    #         && install_deb libgcc1-mips-cross  \
+    #         && install_deb libgomp1-mips-cross \
+    #         && install_deb libc6-mips-cross
 
     # Test that the installs worked
     as                      --version
