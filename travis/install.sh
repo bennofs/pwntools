@@ -38,6 +38,9 @@ setup_travis()
     [[ -f usr/bin/mips-linux-gnu-as ]]      || install_deb binutils-mips-linux-gnu
     [[ -f usr/bin/powerpc-linux-gnu-as ]]   || install_deb binutils-powerpc-linux-gnu
 
+    # Install cross-gcc
+    [[ -f usr/bin/mips-linux-gnu-gcc ]]      || install_deb gcc-mips-linux-gnu
+
     # Test that the installs worked
     as                      --version
     x86_64-linux-gnu-ar     --version
@@ -46,6 +49,7 @@ setup_travis()
     mips-linux-gnu-as       --version
     powerpc-linux-gnu-as    --version
     qemu-arm-static         --version
+    mips-linux-gnu-gcc      --version
 
     # Force-install capstone because it's broken somehow
     [[ -f usr/lib/libcapstone.so.3 ]] || install_deb libcapstone3
