@@ -37,7 +37,7 @@ Examples:
     >>> cmdline = ["gcc", source, "-Wno-format-security", "-o", program + ".64"]
     >>> process(cmdline).wait_for_close()
     >>> cmdline = ["mips-linux-gnu-gcc", source, "-Wno-format-security", "-o", program + ".mips"]
-    >>> process(cmdline).wait_for_close()
+    >>> process(cmdline).stream()
     >>> def exec_fmt(payload):
     ...     p = context.binary.process()
     ...     p.sendline(payload)
