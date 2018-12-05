@@ -696,8 +696,14 @@ def make_atoms(writes, sz, szmax, numbwritten, overflows, strategy, badbytes):
     return all_atoms
 
 def fmtstr_split(offset, writes, numbwritten=0, write_size='byte', write_size_max='long', overflows=16, strategy="small", badbytes=set()):
-    """
+    r"""
     Build a format string like fmtstr_payload but return the string and data separately.
+    Arguments are the same as for `fmtstr_payload`.
+
+    Examples:
+        >>> context.clear(arch = 'amd64')
+        >>> print repr(pwnlib.fmtstr.fmtstr_split(1, {0x0: 0x1337babe}, write_size='int'))
+        ('%322419390c%1$lln', '\x00\x00\x00\x00\x00\x00\x00\x00')
     """
     if write_size not in ['byte', 'short', 'int']:
         log.error("write_size must be 'byte', 'short' or 'int'")
