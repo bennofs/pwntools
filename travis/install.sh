@@ -38,6 +38,10 @@ setup_travis()
     [[ -f usr/bin/mips-linux-gnu-as ]]      || install_deb binutils-mips-linux-gnu
     [[ -f usr/bin/powerpc-linux-gnu-as ]]   || install_deb binutils-powerpc-linux-gnu
 
+    sudo add-apt-repository -y "deb http://archive.ubuntu.com/ubuntu/ xenial main universe"
+    sudo apt-get -qq update
+    sudo apt-get install -qq gcc-mips-linux-gnu
+
     # # Install cross-gcc
     # [[ -f usr/bin/mips-linux-gnu-gcc ]]      || \
     #     install_deb gcc-mips-linux-gnu \

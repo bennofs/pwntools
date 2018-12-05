@@ -5,7 +5,6 @@ addons:
     packages:
     - gcc-multilib
     - lib32stdc++6
-    - gcc-mips-linux-gnu
     - ash
     - bash
     - dash
